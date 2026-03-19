@@ -164,10 +164,11 @@ export default function TodayPage() {
             const status = statusConfig[block.status];
             const isLast = i === mockSchedule.length - 1;
             return (
-              <div
+              <Link
                 key={block.id}
+                href="/courses"
                 className={cn(
-                  "flex items-center gap-4 px-4 py-3.5",
+                  "flex items-center gap-4 px-4 py-3.5 transition-colors hover:bg-accent/50",
                   !isLast && "border-b border-border",
                   block.status === "done" && "opacity-60"
                 )}
@@ -207,15 +208,11 @@ export default function TodayPage() {
                       )}>
                         {status.label}
                       </span>
-                      {(block.status === "active" || block.status === "up-next") && (
-                        <Link href="/tutor" className="text-muted-foreground hover:text-foreground transition-colors">
-                          <ChevronRight className="w-4 h-4" />
-                        </Link>
-                      )}
+                      <ChevronRight className="w-4 h-4 text-muted-foreground" />
                     </>
                   )}
                 </div>
-              </div>
+              </Link>
             );
           })}
         </div>

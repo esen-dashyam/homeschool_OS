@@ -7,11 +7,11 @@ import { PodTask } from "@/types";
 import { Users, CheckCircle2, Circle, Sparkles, Calendar, Clock } from "lucide-react";
 
 const roleConfig: Record<string, { label: string; bg: string; text: string; border: string }> = {
-  presenter:        { label: "Presenter",        bg: "#EEEDFE", text: "#534AB7", border: "#C5C3F5" },
-  "discussion-leader": { label: "Discussion lead", bg: "#E1F5EE", text: "#0F6E56", border: "#A3DECA" },
-  "warmup-leader":  { label: "Warm-up lead",     bg: "#FAEEDA", text: "#854F0B", border: "#F0D0A0" },
-  prep:             { label: "Prep",              bg: "#F1EFE8", text: "#5F5E5A", border: "#E0DDD4" },
-  participant:      { label: "Participant",       bg: "#FAECE7", text: "#993C1D", border: "#F5C4B4" },
+  presenter:           { label: "Presenter",        bg: "#1e1942", text: "#a89fec", border: "#3d2d8a" },
+  "discussion-leader": { label: "Discussion lead",  bg: "#0d2218", text: "#4ec660", border: "#1a4730" },
+  "warmup-leader":     { label: "Warm-up lead",     bg: "#241a08", text: "#ecc452", border: "#4a3510" },
+  prep:                { label: "Prep",              bg: "#1c1f26", text: "#8b949e", border: "#30363d" },
+  participant:         { label: "Participant",       bg: "#2a1108", text: "#f59550", border: "#5a2a0e" },
 };
 
 function TaskCard({
@@ -109,10 +109,10 @@ function TaskCard({
 
       {/* AI connection message */}
       {task.aiConnection && !task.completed && (
-        <div className="mx-4 mb-4 rounded-xl bg-[#EEEDFE] border border-[#C5C3F5] px-4 py-3">
+        <div className="mx-4 mb-4 rounded-xl bg-[#1e1942] border border-[#3d2d8a] px-4 py-3">
           <div className="flex items-center gap-1.5 mb-1">
-            <Sparkles className="w-3.5 h-3.5 text-[#534AB7]" />
-            <span className="text-[#534AB7] text-xs font-semibold">AI tutor connection</span>
+            <Sparkles className="w-3.5 h-3.5 text-[#a89fec]" />
+            <span className="text-[#a89fec] text-xs font-semibold">AI tutor connection</span>
           </div>
           <p className="text-foreground/80 text-xs leading-relaxed">{task.aiConnection}</p>
         </div>

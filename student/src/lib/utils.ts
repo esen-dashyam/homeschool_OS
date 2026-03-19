@@ -24,164 +24,47 @@ export function getGreeting(name: string): string {
   return `Good evening, ${name}`;
 }
 
+// Dark-theme palette (Brilliant.org faithful)
+const PURPLE = { bg: "#1e1942", accent: "#8b7cf8", text: "#a89fec", border: "#3d2d8a", lightBg: "#1a1538" };
+const GREEN  = { bg: "#0d2218", accent: "#3fb950", text: "#4ec660", border: "#1a4730", lightBg: "#0a1a12" };
+const AMBER  = { bg: "#241a08", accent: "#e3b341", text: "#ecc452", border: "#4a3510", lightBg: "#1e1508" };
+const ORANGE = { bg: "#2a1108", accent: "#f0883e", text: "#f59550", border: "#5a2a0e", lightBg: "#231008" };
+const BLUE   = { bg: "#0d1e3a", accent: "#58a6ff", text: "#79b8ff", border: "#1c3a60", lightBg: "#0a1830" };
+const TEAL   = { bg: "#0a1f22", accent: "#39c5cf", text: "#56d0d8", border: "#154045", lightBg: "#081a1d" };
+const PINK   = { bg: "#2a0e28", accent: "#d2a8ff", text: "#e0baff", border: "#5a2058", lightBg: "#220c20" };
+
 export const SUBJECT_COLORS: Record<string, SubjectColor> = {
-  Biology: {
-    bg: "#EEEDFE",
-    accent: "#534AB7",
-    text: "#534AB7",
-    border: "#C5C3F5",
-    lightBg: "#F5F4FF",
-  },
-  "Life Sciences": {
-    bg: "#EEEDFE",
-    accent: "#534AB7",
-    text: "#534AB7",
-    border: "#C5C3F5",
-    lightBg: "#F5F4FF",
-  },
-  Mathematics: {
-    bg: "#E1F5EE",
-    accent: "#0F6E56",
-    text: "#0F6E56",
-    border: "#A3DECA",
-    lightBg: "#F0FAF6",
-  },
-  Math: {
-    bg: "#E1F5EE",
-    accent: "#0F6E56",
-    text: "#0F6E56",
-    border: "#A3DECA",
-    lightBg: "#F0FAF6",
-  },
-  "Pre-Algebra": {
-    bg: "#E1F5EE",
-    accent: "#0F6E56",
-    text: "#0F6E56",
-    border: "#A3DECA",
-    lightBg: "#F0FAF6",
-  },
-  "Algebra II": {
-    bg: "#E1F5EE",
-    accent: "#0F6E56",
-    text: "#0F6E56",
-    border: "#A3DECA",
-    lightBg: "#F0FAF6",
-  },
-  History: {
-    bg: "#FAEEDA",
-    accent: "#854F0B",
-    text: "#854F0B",
-    border: "#F0D0A0",
-    lightBg: "#FDF6EC",
-  },
-  "Social Studies": {
-    bg: "#FAEEDA",
-    accent: "#854F0B",
-    text: "#854F0B",
-    border: "#F0D0A0",
-    lightBg: "#FDF6EC",
-  },
-  "AP World History": {
-    bg: "#FAEEDA",
-    accent: "#854F0B",
-    text: "#854F0B",
-    border: "#F0D0A0",
-    lightBg: "#FDF6EC",
-  },
-  English: {
-    bg: "#FAECE7",
-    accent: "#993C1D",
-    text: "#993C1D",
-    border: "#F5C4B4",
-    lightBg: "#FDF5F2",
-  },
-  Literature: {
-    bg: "#FAECE7",
-    accent: "#993C1D",
-    text: "#993C1D",
-    border: "#F5C4B4",
-    lightBg: "#FDF5F2",
-  },
-  "English Literature": {
-    bg: "#FAECE7",
-    accent: "#993C1D",
-    text: "#993C1D",
-    border: "#F5C4B4",
-    lightBg: "#FDF5F2",
-  },
-  Science: {
-    bg: "#E6F1FB",
-    accent: "#185FA5",
-    text: "#185FA5",
-    border: "#B3D0EE",
-    lightBg: "#F0F7FD",
-  },
-  "Physical Science": {
-    bg: "#E6F1FB",
-    accent: "#185FA5",
-    text: "#185FA5",
-    border: "#B3D0EE",
-    lightBg: "#F0F7FD",
-  },
-  Chemistry: {
-    bg: "#E6F1FB",
-    accent: "#185FA5",
-    text: "#185FA5",
-    border: "#B3D0EE",
-    lightBg: "#F0F7FD",
-  },
-  Physics: {
-    bg: "#E6F1FB",
-    accent: "#185FA5",
-    text: "#185FA5",
-    border: "#B3D0EE",
-    lightBg: "#F0F7FD",
-  },
-  Art: {
-    bg: "#FBEAF0",
-    accent: "#993556",
-    text: "#993556",
-    border: "#F5C0D4",
-    lightBg: "#FDF2F6",
-  },
-  Creative: {
-    bg: "#FBEAF0",
-    accent: "#993556",
-    text: "#993556",
-    border: "#F5C0D4",
-    lightBg: "#FDF2F6",
-  },
-  Spanish: {
-    bg: "#E6F1FB",
-    accent: "#185FA5",
-    text: "#185FA5",
-    border: "#B3D0EE",
-    lightBg: "#F0F7FD",
-  },
-  "Spanish II": {
-    bg: "#E6F1FB",
-    accent: "#185FA5",
-    text: "#185FA5",
-    border: "#B3D0EE",
-    lightBg: "#F0F7FD",
-  },
-  "Foreign Language": {
-    bg: "#E6F1FB",
-    accent: "#185FA5",
-    text: "#185FA5",
-    border: "#B3D0EE",
-    lightBg: "#F0F7FD",
-  },
+  Biology:            PURPLE,
+  "Life Sciences":    PURPLE,
+  Mathematics:        GREEN,
+  Math:               GREEN,
+  "Pre-Algebra":      GREEN,
+  "Algebra II":       GREEN,
+  History:            AMBER,
+  "Social Studies":   AMBER,
+  "AP World History": AMBER,
+  English:            ORANGE,
+  Literature:         ORANGE,
+  "English Literature": ORANGE,
+  Science:            BLUE,
+  "Physical Science": BLUE,
+  Chemistry:          BLUE,
+  Physics:            BLUE,
+  Art:                PINK,
+  Creative:           PINK,
+  Spanish:            TEAL,
+  "Spanish II":       TEAL,
+  "Foreign Language": TEAL,
 };
 
 export function getSubjectColor(subject: string): SubjectColor {
   return (
     SUBJECT_COLORS[subject] ?? {
-      bg: "#F1EFE8",
-      accent: "#5F5E5A",
-      text: "#5F5E5A",
-      border: "#E0DDD4",
-      lightBg: "#F7F6F2",
+      bg: "#1c1f26",
+      accent: "#8b949e",
+      text: "#8b949e",
+      border: "#30363d",
+      lightBg: "#161b22",
     }
   );
 }
@@ -224,9 +107,9 @@ export function paceLabel(status: string): string {
 
 export function paceColor(status: string): string {
   const colors: Record<string, string> = {
-    "on-track": "text-emerald-700 bg-emerald-50 border-emerald-200",
-    ahead: "text-blue-700 bg-blue-50 border-blue-200",
-    "catch-up": "text-amber-700 bg-amber-50 border-amber-200",
+    "on-track": "text-emerald-400 bg-emerald-950/40 border-emerald-800",
+    ahead: "text-blue-400 bg-blue-950/40 border-blue-800",
+    "catch-up": "text-amber-400 bg-amber-950/40 border-amber-800",
   };
-  return colors[status] ?? "text-emerald-700 bg-emerald-50 border-emerald-200";
+  return colors[status] ?? "text-emerald-400 bg-emerald-950/40 border-emerald-800";
 }

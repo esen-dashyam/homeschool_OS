@@ -40,7 +40,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#EEEDFE] via-[#F5F4FF] to-[#E1F5EE] p-4">
+    <div className="min-h-screen flex items-center justify-center p-4" style={{ backgroundColor: "#0d1117" }}>
       <div className="w-full max-w-sm">
         {/* Logo */}
         <div className="flex flex-col items-center mb-8">
@@ -52,7 +52,7 @@ export default function LoginPage() {
         </div>
 
         {/* Card */}
-        <div className="bg-card rounded-2xl border border-border shadow-sm p-6">
+        <div className="rounded-2xl border p-6" style={{ backgroundColor: "#161b22", borderColor: "#21262d" }}>
           <h2 className="text-foreground font-semibold text-base mb-1">Welcome back!</h2>
           <p className="text-muted-foreground text-sm mb-6">
             Enter the username and password your parent set up for you.
@@ -93,7 +93,7 @@ export default function LoginPage() {
             </div>
 
             {error && (
-              <p className="text-red-600 text-sm bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+              <p className="text-sm rounded-lg px-3 py-2" style={{ color: "#f85149", backgroundColor: "#1c1117", border: "1px solid #3d1a1a" }}>
                 {error}
               </p>
             )}
@@ -125,7 +125,7 @@ export default function LoginPage() {
         </div>
 
         {/* Demo credentials */}
-        <div className="mt-4 bg-white/70 rounded-2xl border border-border px-4 py-3">
+        <div className="mt-4 rounded-2xl border px-4 py-3" style={{ backgroundColor: "#161b22", borderColor: "#21262d" }}>
           <p className="text-foreground text-xs font-semibold mb-2">Demo accounts</p>
           <div className="space-y-1">
             {mockAccounts.map((a) => (

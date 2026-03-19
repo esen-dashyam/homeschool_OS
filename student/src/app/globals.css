@@ -4,25 +4,24 @@
 
 @layer base {
   :root {
-    /* Warm cream — calm learning surface */
-    --background: 38 40% 97%;
-    --foreground: 30 10% 18%;
-    --card: 0 0% 100%;
-    --card-foreground: 30 10% 18%;
-    /* Soft indigo primary — student-friendly */
-    --primary: 245 60% 55%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 38 20% 93%;
-    --secondary-foreground: 30 10% 18%;
-    --muted: 38 20% 93%;
-    --muted-foreground: 38 5% 52%;
-    --accent: 38 15% 91%;
-    --accent-foreground: 30 10% 18%;
-    --border: 38 12% 88%;
-    --input: 38 12% 88%;
-    --ring: 245 60% 55%;
+    /* Brilliant dark theme */
+    --background: 215 19% 7%;       /* #0d1117 */
+    --foreground: 213 27% 84%;      /* #c9d1d9 */
+    --card: 215 15% 11%;            /* #161b22 */
+    --card-foreground: 213 27% 84%;
+    --primary: 212 100% 67%;        /* #58a6ff */
+    --primary-foreground: 215 19% 7%;
+    --secondary: 216 13% 17%;       /* #21262d */
+    --secondary-foreground: 213 27% 84%;
+    --muted: 216 13% 17%;
+    --muted-foreground: 215 9% 58%; /* #8b949e */
+    --accent: 216 17% 22%;          /* #1f2937 */
+    --accent-foreground: 210 17% 98%;
+    --border: 216 13% 17%;          /* #21262d */
+    --input: 216 13% 17%;
+    --ring: 212 100% 67%;
     --radius: 0.5rem;
-    --font-sans: "Inter", system-ui, sans-serif;
+    --font-sans: system-ui, -apple-system, sans-serif;
   }
 }
 
@@ -32,7 +31,13 @@
   }
   body {
     @apply bg-background text-foreground;
+    background-color: #0d1117 !important;
+    color: #c9d1d9;
+    font-family: system-ui, -apple-system, sans-serif;
     font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  html {
+    background-color: #0d1117;
   }
 }
 

@@ -8,8 +8,8 @@ import { StickyNote, Search, Sparkles, Bell, Pencil, Trash2, X, Check, Plus } fr
 
 const sourceConfig = {
   manual:      { label: "My note",     className: "bg-accent text-foreground border-border" },
-  "ai-flagged":  { label: "AI saved",    className: "bg-[#EEEDFE] text-[#534AB7] border-[#C5C3F5]" },
-  "ai-reminder": { label: "Study tip",   className: "bg-amber-50 text-amber-700 border-amber-200" },
+  "ai-flagged":  { label: "AI saved",    className: "bg-[#1e1942] text-[#a89fec] border-[#3d2d8a]" },
+  "ai-reminder": { label: "Study tip",   className: "bg-[#241a08] text-[#ecc452] border-[#4a3510]" },
 };
 
 function NoteCard({
@@ -194,8 +194,8 @@ export default function NotesPage() {
 
       {/* New note composer */}
       {showNewNote && (
-        <div className="bg-card rounded-2xl border border-[#534AB7]/30 shadow-sm overflow-hidden mb-5">
-          <div className="px-4 py-3 border-b border-border bg-[#F5F4FF] flex items-center gap-3">
+        <div className="bg-card rounded-2xl border border-[#3d2d8a]/50 shadow-sm overflow-hidden mb-5">
+          <div className="px-4 py-3 border-b border-border bg-[#1e1942] flex items-center gap-3">
             <StickyNote className="w-4 h-4 text-[#534AB7]" />
             <span className="text-foreground font-semibold text-sm">New note</span>
             <select
