@@ -1,0 +1,487 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.shell{display:grid;grid-template-columns:200px 1fr;height:680px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;background:var(--color-background-primary)}
+.sidebar{background:var(--color-background-secondary);border-right:0.5px solid var(--color-border-tertiary);display:flex;flex-direction:column;overflow:hidden}
+.sb-header{padding:14px 14px 10px;border-bottom:0.5px solid var(--color-border-tertiary)}
+.sb-title{font-size:13px;font-weight:500;color:var(--color-text-primary)}
+.sb-sub{font-size:11px;color:var(--color-text-secondary);margin-top:2px}
+.sb-section{padding:10px 10px 4px;font-size:10px;font-weight:500;color:var(--color-text-tertiary);text-transform:uppercase;letter-spacing:.06em}
+.sb-item{display:flex;align-items:center;gap:8px;padding:7px 10px;cursor:pointer;border-radius:6px;margin:0 4px 1px;transition:background .1s;font-size:12px;color:var(--color-text-secondary)}
+.sb-item:hover{background:var(--color-background-primary);color:var(--color-text-primary)}
+.sb-item.on{background:var(--color-background-primary);color:var(--color-text-primary);font-weight:500}
+.sb-item svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.sb-badge{font-size:10px;font-weight:500;background:#EEEDFE;color:#3C3489;border-radius:4px;padding:1px 5px;margin-left:auto}
+.main{display:flex;flex-direction:column;overflow:hidden}
+.panel{display:none;flex:1;flex-direction:column;overflow:hidden}
+.panel.on{display:flex}
+
+/* AI chat */
+.chat-header{padding:12px 16px;border-bottom:0.5px solid var(--color-border-tertiary);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.chat-title{font-size:13px;font-weight:500;color:var(--color-text-primary)}
+.chat-sub{font-size:11px;color:var(--color-text-secondary);margin-top:1px}
+.msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:14px}
+.msg{display:flex;gap:10px;align-items:flex-start}
+.msg.user{flex-direction:row-reverse}
+.av{width:28px;height:28px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;margin-top:1px}
+.bubble{max-width:80%;padding:10px 13px;border-radius:var(--border-radius-lg);font-size:12px;line-height:1.6;color:var(--color-text-primary)}
+.msg.ai .bubble{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:4px 12px 12px 12px}
+.msg.user .bubble{background:#EEEDFE;color:#1A1A1A;border-radius:12px 4px 12px 12px}
+.ai-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:12px 14px;margin-top:8px}
+.ai-card-title{font-size:12px;font-weight:500;color:var(--color-text-primary);margin-bottom:8px}
+.week-row{display:flex;gap:8px;align-items:flex-start;padding:6px 0;border-bottom:0.5px solid var(--color-border-tertiary);font-size:11px}
+.week-row:last-child{border-bottom:none}
+.week-num{min-width:52px;color:var(--color-text-tertiary);font-weight:500;flex-shrink:0}
+.week-topic{color:var(--color-text-primary);flex:1}
+.week-hrs{color:var(--color-text-secondary);white-space:nowrap}
+.chat-input-area{padding:10px 16px;border-top:0.5px solid var(--color-border-tertiary);flex-shrink:0}
+.input-row{display:flex;gap:8px;align-items:center}
+.chat-input{flex:1;padding:8px 12px;font-size:12px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:var(--color-background-secondary);color:var(--color-text-primary);outline:none}
+.chat-input:focus{border-color:#7F77DD}
+.send-btn{padding:7px 14px;font-size:12px;font-weight:500;background:#534AB7;color:#fff;border:none;border-radius:var(--border-radius-md);cursor:pointer}
+.quick-btns{display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap}
+.qbtn{font-size:11px;padding:4px 10px;border:0.5px solid var(--color-border-secondary);border-radius:20px;cursor:pointer;background:none;color:var(--color-text-secondary);transition:all .1s;white-space:nowrap}
+.qbtn:hover{border-color:#7F77DD;color:#534AB7}
+
+/* Upload */
+.upload-area{padding:16px;flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:14px}
+.drop-zone{border:1.5px dashed var(--color-border-secondary);border-radius:var(--border-radius-lg);padding:28px 20px;text-align:center;cursor:pointer;transition:all .15s}
+.drop-zone:hover{background:#EEEDFE;border-color:#7F77DD}
+.drop-icon{width:40px;height:40px;border-radius:10px;background:var(--color-background-secondary);margin:0 auto 10px;display:flex;align-items:center;justify-content:center}
+.file-row{display:flex;align-items:center;gap:10px;padding:10px 12px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md)}
+.file-icon{width:32px;height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;flex-shrink:0}
+.file-name{font-size:12px;font-weight:500;color:var(--color-text-primary);flex:1}
+.file-status{font-size:11px}
+.progress-bar{height:3px;background:var(--color-background-secondary);border-radius:2px;margin-top:4px;overflow:hidden}
+.progress-fill{height:100%;border-radius:2px;transition:width .4s}
+.section-label{font-size:11px;font-weight:500;color:var(--color-text-tertiary);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.tag{display:inline-flex;align-items:center;font-size:10px;font-weight:500;padding:2px 7px;border-radius:4px}
+
+/* Roadmap */
+.roadmap-area{padding:16px;flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:12px}
+.rm-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.rm-unit{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden}
+.rm-unit-header{padding:10px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;border-bottom:0.5px solid var(--color-border-tertiary)}
+.rm-unit-num{width:24px;height:24px;border-radius:50%;background:#EEEDFE;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;color:#3C3489;flex-shrink:0}
+.rm-unit-name{font-size:13px;font-weight:500;color:var(--color-text-primary);flex:1}
+.rm-unit-hrs{font-size:11px;color:var(--color-text-secondary)}
+.rm-week{display:flex;align-items:flex-start;gap:10px;padding:8px 14px;border-bottom:0.5px solid var(--color-border-tertiary)}
+.rm-week:last-child{border-bottom:none}
+.rm-wdot{width:6px;height:6px;border-radius:50%;background:#AFA9EC;margin-top:5px;flex-shrink:0}
+.rm-wtopic{font-size:12px;color:var(--color-text-primary);flex:1}
+.rm-whrs{font-size:11px;color:var(--color-text-secondary);white-space:nowrap}
+.rm-wtype{font-size:10px;padding:1px 6px;border-radius:4px;white-space:nowrap}
+
+/* Quiz builder */
+.quiz-area{padding:16px;flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:12px}
+.quiz-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:12px 14px}
+.qnum{font-size:10px;font-weight:500;color:var(--color-text-tertiary);margin-bottom:4px}
+.qtext{font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:10px;line-height:1.4}
+.qopt{display:flex;align-items:center;gap:8px;padding:6px 0;font-size:12px;color:var(--color-text-secondary)}
+.qopt-letter{width:20px;height:20px;border-radius:50%;border:1px solid var(--color-border-secondary);display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0}
+.qopt.correct .qopt-letter{background:#E1F5EE;border-color:#1D9E75;color:#085041}
+.qopt.correct span{color:var(--color-text-primary);font-weight:500}
+.quiz-meta{display:flex;gap:8px;margin-top:8px;padding-top:8px;border-top:0.5px solid var(--color-border-tertiary)}
+.meta-chip{font-size:10px;padding:2px 7px;border-radius:4px}
+</style>
+
+<div style="padding:.75rem 0">
+<div class="shell">
+
+  <div class="sidebar">
+    <div class="sb-header">
+      <div class="sb-title">Course planner</div>
+      <div class="sb-sub">Emma · Biology gr. 10</div>
+    </div>
+    <div style="overflow-y:auto;flex:1">
+      <div class="sb-section">Workspace</div>
+      <div class="sb-item on" onclick="show('ai')">
+        <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        AI course planner
+      </div>
+      <div class="sb-item" onclick="show('upload')">
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        Upload materials
+        <span class="sb-badge">3</span>
+      </div>
+      <div class="sb-item" onclick="show('roadmap')">
+        <svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        Study roadmap
+      </div>
+      <div class="sb-item" onclick="show('quiz')">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        Quiz builder
+      </div>
+
+      <div class="sb-section" style="margin-top:8px">Saved courses</div>
+      <div class="sb-item" onclick="show('ai')">
+        <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+        Biology Unit 1
+      </div>
+      <div class="sb-item" onclick="show('ai')">
+        <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+        Algebra II — Fall
+      </div>
+
+      <div style="margin:8px 8px 0">
+        <button style="width:100%;font-size:11px;padding:6px;border:0.5px dashed var(--color-border-secondary);border-radius:var(--border-radius-md);background:none;cursor:pointer;color:var(--color-text-tertiary)">+ New course</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI COURSE PLANNER -->
+  <div id="panel-ai" class="panel on">
+    <div class="chat-header">
+      <div>
+        <div class="chat-title">AI course planner</div>
+        <div class="chat-sub">Upload PDFs, describe your goals — the AI builds the curriculum plan</div>
+      </div>
+      <div style="display:flex;gap:6px">
+        <button style="font-size:11px;padding:4px 10px">Export plan</button>
+        <button style="font-size:11px;padding:4px 10px;background:#EEEDFE;border-color:#AFA9EC;color:#3C3489">Assign to Emma</button>
+      </div>
+    </div>
+    <div class="msgs" id="ai-msgs">
+
+      <div class="msg ai">
+        <div class="av" style="background:#EEEDFE;color:#3C3489">AI</div>
+        <div>
+          <div class="bubble">Hi Sarah. I can help you build a complete curriculum plan for any course. You can upload a textbook, a custom book, a syllabus, or just describe what you want to cover. I will generate a week-by-week roadmap, estimate how many hours each topic will take to absorb, create quizzes, and suggest a reading pace. What are we building today?</div>
+          <div class="ai-card" style="margin-top:8px">
+            <div class="ai-card-title" style="color:var(--color-text-secondary);font-size:11px;margin-bottom:6px">Suggested starting points</div>
+            <div style="display:flex;flex-direction:column;gap:5px">
+              <div onclick="fillAndSend('I want to build a Biology course from Campbell Biology 10th edition. Emma is in grade 10 and we have 36 weeks.')" style="padding:7px 10px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);font-size:12px;color:var(--color-text-secondary);cursor:pointer;transition:border-color .1s" onmouseover="this.style.borderColor='#7F77DD'" onmouseout="this.style.borderColor=''">Build from a textbook PDF I will upload</div>
+              <div onclick="fillAndSend('I want to create a custom biology course. Emma is 15, grade 10, and we have 30 weeks. I want to cover cell biology, genetics, evolution, and ecology.')" style="padding:7px 10px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);font-size:12px;color:var(--color-text-secondary);cursor:pointer;transition:border-color .1s" onmouseover="this.style.borderColor='#7F77DD'" onmouseout="this.style.borderColor=''">Describe the topics I want to cover</div>
+              <div onclick="fillAndSend('Can you suggest a complete high school biology curriculum for a 10th grader with standard pacing?')" style="padding:7px 10px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);font-size:12px;color:var(--color-text-secondary);cursor:pointer;transition:border-color .1s" onmouseover="this.style.borderColor='#7F77DD'" onmouseout="this.style.borderColor=''">Suggest a curriculum for me</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="msg user">
+        <div class="av" style="background:#FAEEDA;color:#633806">S</div>
+        <div class="bubble">I want to create a custom biology course. Emma is 15, grade 10, and we have 30 weeks. I want to cover cell biology, genetics, evolution, and ecology.</div>
+      </div>
+
+      <div class="msg ai">
+        <div class="av" style="background:#EEEDFE;color:#3C3489">AI</div>
+        <div>
+          <div class="bubble">Here is a 30-week biology curriculum built around those four topics. I have distributed the time based on how conceptually dense each area is — cell biology and genetics get more weeks because they require the most foundational understanding before the later topics make sense.</div>
+          <div class="ai-card">
+            <div class="ai-card-title">30-week curriculum overview</div>
+            <div class="week-row"><div class="week-num">Weeks 1–7</div><div class="week-topic">Cell biology — structure, organelles, membrane, division</div><div class="week-hrs">~52h</div></div>
+            <div class="week-row"><div class="week-num">Weeks 8–16</div><div class="week-topic">Genetics — Mendelian, molecular, DNA, gene expression</div><div class="week-hrs">~67h</div></div>
+            <div class="week-row"><div class="week-num">Weeks 17–23</div><div class="week-topic">Evolution — natural selection, speciation, evidence</div><div class="week-hrs">~52h</div></div>
+            <div class="week-row"><div class="week-num">Weeks 24–29</div><div class="week-topic">Ecology — ecosystems, populations, biomes, human impact</div><div class="week-hrs">~45h</div></div>
+            <div class="week-row"><div class="week-num">Week 30</div><div class="week-topic">Cumulative review and final assessment</div><div class="week-hrs">~8h</div></div>
+            <div style="padding-top:8px;margin-top:4px;border-top:0.5px solid var(--color-border-tertiary);font-size:11px;color:var(--color-text-secondary)">Total: ~224 study hours · ~7.5h per week · 0.5 credit per unit</div>
+          </div>
+          <div class="bubble" style="margin-top:8px">Want me to break down any of these units into week-by-week topics? I can also upload a textbook PDF and align this plan to its chapters, or generate quizzes for any unit.</div>
+        </div>
+      </div>
+
+    </div>
+    <div class="chat-input-area">
+      <div class="quick-btns">
+        <button class="qbtn" onclick="fillAndSend('Break down the cell biology unit week by week')">Break down cell biology</button>
+        <button class="qbtn" onclick="fillAndSend('Generate 10 quiz questions for genetics')">Generate quiz</button>
+        <button class="qbtn" onclick="fillAndSend('How many hours should Emma study per day to stay on pace?')">Daily study hours</button>
+        <button class="qbtn" onclick="fillAndSend('Add a lab component to the ecology unit')">Add lab activities</button>
+      </div>
+      <div class="input-row">
+        <input class="chat-input" id="ai-input" placeholder="Ask about curriculum, pacing, quizzes, or upload a PDF..." onkeydown="if(event.key==='Enter')sendAI()">
+        <button class="send-btn" onclick="sendAI()">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- UPLOAD -->
+  <div id="panel-upload" class="panel">
+    <div class="chat-header">
+      <div>
+        <div class="chat-title">Upload materials</div>
+        <div class="chat-sub">PDFs, textbooks, syllabi — AI reads them and builds a knowledge graph</div>
+      </div>
+    </div>
+    <div class="upload-area">
+      <div class="drop-zone" onclick="simulateUpload()">
+        <div class="drop-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-secondary)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        </div>
+        <div style="font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px">Drop files here or click to upload</div>
+        <div style="font-size:11px;color:var(--color-text-secondary)">PDF · DOCX · PPTX · up to 100MB per file</div>
+      </div>
+
+      <div>
+        <div class="section-label">Indexed materials</div>
+        <div style="display:flex;flex-direction:column;gap:6px" id="file-list">
+          <div class="file-row">
+            <div class="file-icon" style="background:#FAECE7;color:#712B13">PDF</div>
+            <div style="flex:1">
+              <div class="file-name">Campbell_Biology_Ch1-7.pdf</div>
+              <div class="progress-bar"><div class="progress-fill" style="width:100%;background:#1D9E75"></div></div>
+              <div style="font-size:10px;color:var(--color-text-tertiary);margin-top:2px">247 pages · 18 topics extracted · indexed</div>
+            </div>
+            <span class="tag" style="background:#E1F5EE;color:#085041">Ready</span>
+          </div>
+          <div class="file-row">
+            <div class="file-icon" style="background:#E1F5EE;color:#085041">PPT</div>
+            <div style="flex:1">
+              <div class="file-name">Genetics_lecture_slides.pptx</div>
+              <div class="progress-bar"><div class="progress-fill" style="width:100%;background:#1D9E75"></div></div>
+              <div style="font-size:10px;color:var(--color-text-tertiary);margin-top:2px">64 slides · 12 topics extracted · indexed</div>
+            </div>
+            <span class="tag" style="background:#E1F5EE;color:#085041">Ready</span>
+          </div>
+          <div class="file-row" id="uploading-row" style="display:none">
+            <div class="file-icon" style="background:#EEEDFE;color:#3C3489">PDF</div>
+            <div style="flex:1">
+              <div class="file-name" id="uploading-name">New file.pdf</div>
+              <div class="progress-bar"><div class="progress-fill" id="upload-bar" style="width:0%;background:#7F77DD"></div></div>
+              <div style="font-size:10px;color:var(--color-text-tertiary);margin-top:2px" id="upload-status">Uploading...</div>
+            </div>
+            <span class="tag" style="background:#EEEDFE;color:#3C3489">Processing</span>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-label">Knowledge graph — extracted concepts</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px">
+          <span class="tag" style="background:#EEEDFE;color:#3C3489;font-size:11px;padding:4px 9px">Cell theory</span>
+          <span class="tag" style="background:#EEEDFE;color:#3C3489;font-size:11px;padding:4px 9px">Organelles</span>
+          <span class="tag" style="background:#EEEDFE;color:#3C3489;font-size:11px;padding:4px 9px">Mitosis</span>
+          <span class="tag" style="background:#EEEDFE;color:#3C3489;font-size:11px;padding:4px 9px">Meiosis</span>
+          <span class="tag" style="background:#EEEDFE;color:#3C3489;font-size:11px;padding:4px 9px">DNA structure</span>
+          <span class="tag" style="background:#EEEDFE;color:#3C3489;font-size:11px;padding:4px 9px">Gene expression</span>
+          <span class="tag" style="background:#EEEDFE;color:#3C3489;font-size:11px;padding:4px 9px">Mendelian genetics</span>
+          <span class="tag" style="background:#EEEDFE;color:#3C3489;font-size:11px;padding:4px 9px">Natural selection</span>
+          <span class="tag" style="background:#EEEDFE;color:#3C3489;font-size:11px;padding:4px 9px">Ecosystems</span>
+          <span class="tag" style="background:var(--color-background-secondary);color:var(--color-text-secondary);font-size:11px;padding:4px 9px">+9 more</span>
+        </div>
+      </div>
+
+      <div style="background:#EEEDFE;border-radius:var(--border-radius-lg);padding:12px 14px">
+        <div style="font-size:12px;font-weight:500;color:#3C3489;margin-bottom:6px">AI reading the materials</div>
+        <div style="font-size:12px;color:#534AB7;line-height:1.6">Based on Campbell Biology chapters 1–7, the AI has identified 18 key topics and estimates <strong>52 study hours</strong> to cover cell biology at a standard 10th grade pace. It has aligned your 7-week plan to specific chapter sections. Go to the AI planner to refine this or generate quizzes from the content.</div>
+        <div style="margin-top:10px;display:flex;gap:8px">
+          <button onclick="show('ai')" style="font-size:11px;padding:5px 12px;background:#534AB7;color:#fff;border:none;border-radius:var(--border-radius-md);cursor:pointer">Open AI planner</button>
+          <button onclick="show('quiz')" style="font-size:11px;padding:5px 12px">Generate quizzes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROADMAP -->
+  <div id="panel-roadmap" class="panel">
+    <div class="chat-header">
+      <div>
+        <div class="chat-title">Study roadmap</div>
+        <div class="chat-sub">Week-by-week plan with estimated hours per topic</div>
+      </div>
+      <div style="display:flex;gap:6px">
+        <button style="font-size:11px;padding:4px 10px">Export PDF</button>
+        <button style="font-size:11px;padding:4px 10px">Push to scheduler</button>
+      </div>
+    </div>
+    <div class="roadmap-area">
+
+      <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:4px">
+        <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 12px"><div style="font-size:20px;font-weight:500;color:var(--color-text-primary)">30</div><div style="font-size:11px;color:var(--color-text-secondary)">Total weeks</div></div>
+        <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 12px"><div style="font-size:20px;font-weight:500;color:var(--color-text-primary)">224h</div><div style="font-size:11px;color:var(--color-text-secondary)">Study hours</div></div>
+        <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 12px"><div style="font-size:20px;font-weight:500;color:var(--color-text-primary)">7.5h</div><div style="font-size:11px;color:var(--color-text-secondary)">Per week</div></div>
+      </div>
+
+      <div class="rm-unit">
+        <div class="rm-unit-header">
+          <div class="rm-unit-num">1</div>
+          <div class="rm-unit-name">Cell biology</div>
+          <div class="rm-unit-hrs">Weeks 1–7 · ~52h · 0.5 credit</div>
+        </div>
+        <div class="rm-week">
+          <div class="rm-wdot" style="background:#1D9E75"></div>
+          <div class="rm-wtopic"><span style="font-weight:500">Week 1:</span> Cell theory — history, three principles, Robert Hooke</div>
+          <div style="display:flex;gap:6px;align-items:center"><span class="rm-wtype" style="background:#E1F5EE;color:#085041">Done</span><span class="rm-whrs">6h</span></div>
+        </div>
+        <div class="rm-week">
+          <div class="rm-wdot" style="background:#7F77DD"></div>
+          <div class="rm-wtopic"><span style="font-weight:500">Week 2:</span> Cell types — prokaryotic vs. eukaryotic structure</div>
+          <div style="display:flex;gap:6px;align-items:center"><span class="rm-wtype" style="background:#EEEDFE;color:#3C3489">Active</span><span class="rm-whrs">7h</span></div>
+        </div>
+        <div class="rm-week">
+          <div class="rm-wdot"></div>
+          <div class="rm-wtopic"><span style="font-weight:500">Week 3:</span> Organelles — structure and function of each</div>
+          <div style="display:flex;gap:6px;align-items:center"><span class="rm-wtype" style="background:var(--color-background-secondary);color:var(--color-text-tertiary)">Upcoming</span><span class="rm-whrs">8h</span></div>
+        </div>
+        <div class="rm-week">
+          <div class="rm-wdot"></div>
+          <div class="rm-wtopic"><span style="font-weight:500">Weeks 4–5:</span> Cell membrane — structure, transport, osmosis</div>
+          <div style="display:flex;gap:6px;align-items:center"><span class="rm-wtype" style="background:var(--color-background-secondary);color:var(--color-text-tertiary)">Upcoming</span><span class="rm-whrs">12h</span></div>
+        </div>
+        <div class="rm-week">
+          <div class="rm-wdot"></div>
+          <div class="rm-wtopic"><span style="font-weight:500">Weeks 6–7:</span> Cell division — mitosis, meiosis, cell cycle</div>
+          <div style="display:flex;gap:6px;align-items:center"><span class="rm-wtype" style="background:var(--color-background-secondary);color:var(--color-text-tertiary)">Upcoming</span><span class="rm-whrs">14h + 5h assessment</span></div>
+        </div>
+      </div>
+
+      <div class="rm-unit">
+        <div class="rm-unit-header" style="cursor:pointer" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">
+          <div class="rm-unit-num">2</div>
+          <div class="rm-unit-name">Genetics</div>
+          <div class="rm-unit-hrs">Weeks 8–16 · ~67h · 0.5 credit</div>
+        </div>
+        <div style="display:none">
+          <div class="rm-week"><div class="rm-wdot"></div><div class="rm-wtopic"><span style="font-weight:500">Weeks 8–9:</span> Mendelian genetics — dominant, recessive, Punnett squares</div><div class="rm-whrs">12h</div></div>
+          <div class="rm-week"><div class="rm-wdot"></div><div class="rm-wtopic"><span style="font-weight:500">Weeks 10–11:</span> DNA structure and replication</div><div class="rm-whrs">14h</div></div>
+          <div class="rm-week"><div class="rm-wdot"></div><div class="rm-wtopic"><span style="font-weight:500">Weeks 12–14:</span> Gene expression — transcription, translation, regulation</div><div class="rm-whrs">18h</div></div>
+          <div class="rm-week"><div class="rm-wdot"></div><div class="rm-wtopic"><span style="font-weight:500">Weeks 15–16:</span> Mutations, genetic disorders, biotechnology basics</div><div class="rm-whrs">13h + 10h assessment</div></div>
+        </div>
+      </div>
+
+      <div style="background:#FAEEDA;border-radius:var(--border-radius-lg);padding:12px 14px">
+        <div style="font-size:12px;font-weight:500;color:#633806;margin-bottom:4px">AI pacing note</div>
+        <div style="font-size:12px;color:#854F0B;line-height:1.5">Based on 7.5 study hours per week, Emma should complete all 6 Bloom's taxonomy levels for each topic before moving on. At the current pace she will finish the full course with 2 weeks of buffer for review. If she studies 9h/week she could complete in 25 weeks.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ BUILDER -->
+  <div id="panel-quiz" class="panel">
+    <div class="chat-header">
+      <div>
+        <div class="chat-title">Quiz builder</div>
+        <div class="chat-sub">AI-generated from your uploaded materials · all 6 Bloom's levels</div>
+      </div>
+      <div style="display:flex;gap:6px">
+        <select style="font-size:11px;padding:4px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:var(--color-background-primary)">
+          <option>Cell biology — all topics</option>
+          <option>Organelles only</option>
+          <option>Cell division only</option>
+        </select>
+        <button style="font-size:11px;padding:4px 10px;background:#534AB7;color:#fff;border:none;border-radius:var(--border-radius-md);cursor:pointer">Generate more</button>
+      </div>
+    </div>
+    <div class="quiz-area">
+
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:4px">
+        <span class="tag" style="background:#E1F5EE;color:#085041;font-size:11px;padding:3px 8px">L1 Remember · 3</span>
+        <span class="tag" style="background:#E6F1FB;color:#0C447C;font-size:11px;padding:3px 8px">L2 Understand · 3</span>
+        <span class="tag" style="background:#EEEDFE;color:#3C3489;font-size:11px;padding:3px 8px">L3 Apply · 2</span>
+        <span class="tag" style="background:#FAEEDA;color:#633806;font-size:11px;padding:3px 8px">L4 Analyze · 1</span>
+        <span class="tag" style="background:var(--color-background-secondary);color:var(--color-text-secondary);font-size:11px;padding:3px 8px">10 questions total</span>
+      </div>
+
+      <div class="quiz-card">
+        <div class="qnum">Q1 · L1 Remember · Cell theory</div>
+        <div class="qtext">Which of the following is NOT one of the three principles of cell theory?</div>
+        <div class="qopt"><div class="qopt-letter">A</div><span>All living things are made of cells</span></div>
+        <div class="qopt"><div class="qopt-letter">B</div><span>The cell is the basic unit of life</span></div>
+        <div class="qopt correct"><div class="qopt-letter">C</div><span>Cells need oxygen to survive</span></div>
+        <div class="qopt"><div class="qopt-letter">D</div><span>All cells come from pre-existing cells</span></div>
+        <div class="quiz-meta">
+          <span class="meta-chip" style="background:#E1F5EE;color:#085041">L1 Remember</span>
+          <span class="meta-chip" style="background:var(--color-background-secondary);color:var(--color-text-secondary)">Source: Campbell Ch.1 p.4</span>
+          <span class="meta-chip" style="background:var(--color-background-secondary);color:var(--color-text-secondary)">Multiple choice</span>
+        </div>
+      </div>
+
+      <div class="quiz-card">
+        <div class="qnum">Q2 · L2 Understand · Organelles</div>
+        <div class="qtext">In your own words, explain why a muscle cell would have significantly more mitochondria than a skin cell.</div>
+        <div style="background:var(--color-background-secondary);border-radius:6px;padding:8px 10px;font-size:11px;color:var(--color-text-secondary);margin-top:4px;line-height:1.5">
+          <span style="font-weight:500;color:var(--color-text-primary)">AI rubric:</span> Strong answer connects muscle cell's high energy demand (repeated contraction) to increased ATP production need, and explains that mitochondria produce ATP. Minimum 25 words. Must use student's own phrasing.
+        </div>
+        <div class="quiz-meta">
+          <span class="meta-chip" style="background:#E6F1FB;color:#0C447C">L2 Understand</span>
+          <span class="meta-chip" style="background:var(--color-background-secondary);color:var(--color-text-secondary)">Open response</span>
+          <span class="meta-chip" style="background:var(--color-background-secondary);color:var(--color-text-secondary)">AI-graded</span>
+        </div>
+      </div>
+
+      <div class="quiz-card">
+        <div class="qnum">Q3 · L3 Apply · Organelles</div>
+        <div class="qtext">A scientist discovers a new type of cell that specialises in producing large quantities of proteins for secretion. Which TWO organelles would you expect to find in unusually high numbers in this cell?</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px">
+          <span style="padding:5px 12px;border:0.5px solid var(--color-border-secondary);border-radius:6px;font-size:12px;color:var(--color-text-secondary)">Mitochondria</span>
+          <span style="padding:5px 12px;border:1.5px solid #1D9E75;border-radius:6px;font-size:12px;color:#085041;background:#E1F5EE;font-weight:500">Rough ER</span>
+          <span style="padding:5px 12px;border:1.5px solid #1D9E75;border-radius:6px;font-size:12px;color:#085041;background:#E1F5EE;font-weight:500">Golgi apparatus</span>
+          <span style="padding:5px 12px;border:0.5px solid var(--color-border-secondary);border-radius:6px;font-size:12px;color:var(--color-text-secondary)">Vacuole</span>
+        </div>
+        <div class="quiz-meta" style="margin-top:10px">
+          <span class="meta-chip" style="background:#EEEDFE;color:#3C3489">L3 Apply</span>
+          <span class="meta-chip" style="background:var(--color-background-secondary);color:var(--color-text-secondary)">Multi-select</span>
+          <span class="meta-chip" style="background:var(--color-background-secondary);color:var(--color-text-secondary)">Source: Campbell Ch.6 p.102</span>
+        </div>
+      </div>
+
+      <div style="text-align:center;padding:8px">
+        <button style="font-size:12px;padding:8px 20px" onclick="show('ai')">Ask AI to generate harder questions ↗</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<script>
+function show(id) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('on'));
+  document.getElementById('panel-'+id).classList.add('on');
+  const map = {ai:0,upload:1,roadmap:2,quiz:3};
+  document.querySelectorAll('.sb-item')[map[id]]?.classList.add('on');
+}
+
+const aiReplies = [
+  "Here is the week-by-week breakdown for the cell biology unit:\n\nWeek 1 (6h): Cell theory — history, the three principles, Hooke and Leeuwenhoek\nWeek 2 (7h): Cell types — prokaryotic vs. eukaryotic, key structural differences\nWeek 3 (8h): Organelles — function of each major organelle, energy flow\nWeek 4–5 (12h): Cell membrane — fluid mosaic model, passive and active transport, osmosis\nWeek 6–7 (14h): Cell division — mitosis phases, meiosis, the cell cycle and its checkpoints\n\nEach week includes 3 Brilliant-style exercises and progresses through all 6 Bloom's levels before moving on.",
+  "For Emma studying 7.5 hours per week, a balanced daily schedule would be:\n\n• Monday–Thursday: 1.5h per day (core subject time)\n• Friday: 1h review + 0.5h quiz completion\n\nFor harder conceptual weeks (like organelles and cell division), I recommend splitting the 1.5h into two 45-minute blocks with a break between them. Research shows this doubles retention for complex material compared to one long session.",
+  "I have generated 8 quiz questions from the genetics unit in your uploaded slides. They cover Mendelian genetics at L1 through L3 Bloom's levels. Go to the Quiz Builder tab to review and edit them before assigning to Emma.",
+  "I have added a lab component to the ecology unit. Weeks 26–27 now include:\n\n• Week 26: Field observation activity — local ecosystem mapping (3h)\n• Week 27: Data analysis — population sampling simulation using your backyard or a local park (4h)\n\nBoth labs are designed to work without special equipment. I have added them to the roadmap and updated the total hour estimate for the unit from 45h to 52h."
+];
+let replyIdx = 0;
+
+function sendAI() {
+  const input = document.getElementById('ai-input');
+  const val = input.value.trim(); if(!val) return;
+  const msgs = document.getElementById('ai-msgs');
+  const userDiv = document.createElement('div');
+  userDiv.className = 'msg user';
+  userDiv.innerHTML = `<div class="av" style="background:#FAEEDA;color:#633806">S</div><div class="bubble">${val}</div>`;
+  msgs.appendChild(userDiv);
+  input.value = '';
+  setTimeout(() => {
+    const aiDiv = document.createElement('div');
+    aiDiv.className = 'msg ai';
+    const reply = aiReplies[replyIdx % aiReplies.length];
+    aiDiv.innerHTML = `<div class="av" style="background:#EEEDFE;color:#3C3489">AI</div><div><div class="bubble">${reply.replace(/\n/g,'<br>')}</div></div>`;
+    msgs.appendChild(aiDiv);
+    replyIdx++;
+    msgs.scrollTop = msgs.scrollHeight;
+  }, 700);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function fillAndSend(text) {
+  document.getElementById('ai-input').value = text;
+  sendAI();
+}
+
+let uploadTimer;
+function simulateUpload() {
+  const row = document.getElementById('uploading-row');
+  const bar = document.getElementById('upload-bar');
+  const status = document.getElementById('upload-status');
+  document.getElementById('uploading-name').textContent = 'Evolution_textbook_ch12.pdf';
+  row.style.display = 'flex';
+  let pct = 0;
+  clearInterval(uploadTimer);
+  uploadTimer = setInterval(() => {
+    pct = Math.min(100, pct + Math.random() * 15 + 5);
+    bar.style.width = Math.round(pct) + '%';
+    if(pct < 100) status.textContent = 'Uploading ' + Math.round(pct) + '%...';
+    else { status.textContent = 'Indexing and extracting topics...'; clearInterval(uploadTimer);
+      setTimeout(() => { status.textContent = '8 topics extracted · indexed'; bar.style.background = '#1D9E75'; row.querySelector('.tag').textContent = 'Ready'; row.querySelector('.tag').style.background = '#E1F5EE'; row.querySelector('.tag').style.color = '#085041'; }, 1800); }
+  }, 200);
+}
+</script>

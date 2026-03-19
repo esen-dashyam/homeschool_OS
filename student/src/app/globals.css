@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Warm cream — calm learning surface */
+    --background: 38 40% 97%;
+    --foreground: 30 10% 18%;
+    --card: 0 0% 100%;
+    --card-foreground: 30 10% 18%;
+    /* Soft indigo primary — student-friendly */
+    --primary: 245 60% 55%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 38 20% 93%;
+    --secondary-foreground: 30 10% 18%;
+    --muted: 38 20% 93%;
+    --muted-foreground: 38 5% 52%;
+    --accent: 38 15% 91%;
+    --accent-foreground: 30 10% 18%;
+    --border: 38 12% 88%;
+    --input: 38 12% 88%;
+    --ring: 245 60% 55%;
+    --radius: 0.5rem;
+    --font-sans: "Inter", system-ui, sans-serif;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-thin {
+    scrollbar-width: thin;
+  }
+  .line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+}

@@ -1,0 +1,406 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:inherit}
+/* Brilliant uses a very specific dark navy */
+.b-bg{background:#0d1117;border-radius:12px;overflow:hidden;min-height:560px;display:flex;flex-direction:column}
+.b-nav{background:#161b22;border-bottom:1px solid #21262d;padding:0 20px;display:flex;align-items:center;gap:0;flex-shrink:0}
+.b-nav-item{font-size:12px;color:#8b949e;padding:12px 14px;cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap}
+.b-nav-item:hover{color:#e6edf3}
+.b-nav-item.on{color:#58a6ff;border-bottom-color:#58a6ff}
+.b-panel{display:none;flex:1;flex-direction:column}.b-panel.on{display:flex}
+
+/* Course home — Brilliant's course grid */
+.course-hero{background:#161b22;padding:20px 24px;border-bottom:1px solid #21262d;flex-shrink:0}
+.course-hero-title{font-size:18px;font-weight:600;color:#e6edf3;margin-bottom:4px}
+.course-hero-sub{font-size:12px;color:#8b949e}
+.course-grid{padding:20px 24px;display:flex;flex-direction:column;gap:0;overflow-y:auto;flex:1}
+.chapter-label{font-size:11px;font-weight:600;color:#8b949e;text-transform:uppercase;letter-spacing:.08em;margin:16px 0 8px;padding-left:2px}
+.chapter-label:first-child{margin-top:0}
+.lesson-row{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:8px;cursor:pointer;transition:background .12s;margin-bottom:2px}
+.lesson-row:hover{background:#161b22}
+.lesson-row.on{background:#1f2937}
+.lesson-icon{width:36px;height:36px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.lesson-icon svg{width:18px;height:18px;stroke:#8b949e;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.lesson-icon.done{background:#0d2218}
+.lesson-icon.done svg{stroke:#3fb950}
+.lesson-icon.active{background:#1f2d4a}
+.lesson-icon.active svg{stroke:#58a6ff}
+.lesson-icon.locked{background:#161b22}
+.lesson-title{font-size:13px;color:#e6edf3;flex:1;line-height:1.3}
+.lesson-title.done{color:#8b949e}
+.lesson-meta{font-size:11px;color:#8b949e;white-space:nowrap}
+.lesson-badge{font-size:10px;font-weight:500;padding:2px 7px;border-radius:4px;white-space:nowrap}
+
+/* Lesson reader — this is the KEY screen */
+.lesson-shell{display:flex;flex:1;overflow:hidden}
+.lesson-sidebar{width:220px;background:#161b22;border-right:1px solid #21262d;overflow-y:auto;flex-shrink:0;padding:12px 0}
+.ls-header{padding:0 14px 10px;border-bottom:1px solid #21262d;margin-bottom:8px}
+.ls-title{font-size:12px;font-weight:600;color:#e6edf3}
+.ls-sub{font-size:11px;color:#8b949e;margin-top:2px}
+.ls-item{display:flex;align-items:center;gap:8px;padding:7px 14px;cursor:pointer;transition:background .1s;font-size:12px;color:#8b949e}
+.ls-item:hover{background:#1f2937;color:#e6edf3}
+.ls-item.on{background:#1f2937;color:#58a6ff}
+.ls-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.lesson-main{flex:1;overflow-y:auto;display:flex;flex-direction:column;align-items:center;padding:32px 24px 80px}
+.lesson-progress{width:100%;max-width:640px;display:flex;align-items:center;gap:12px;margin-bottom:28px;flex-shrink:0}
+.prog-bar{flex:1;height:4px;background:#21262d;border-radius:2px;overflow:hidden}
+.prog-fill{height:100%;border-radius:2px;background:#58a6ff;transition:width .4s}
+.prog-label{font-size:11px;color:#8b949e;white-space:nowrap}
+.lesson-content{width:100%;max-width:640px;display:flex;flex-direction:column;gap:20px}
+
+/* Brilliant's prose style */
+.b-prose{font-size:15px;color:#c9d1d9;line-height:1.75}
+.b-prose strong{color:#e6edf3;font-weight:600}
+.b-heading{font-size:20px;font-weight:600;color:#e6edf3;line-height:1.3;margin-bottom:-8px}
+.b-callout{background:#161b22;border:1px solid #21262d;border-left:3px solid #58a6ff;border-radius:0 8px 8px 0;padding:14px 16px;font-size:13px;color:#8b949e;line-height:1.6}
+.b-callout strong{color:#58a6ff}
+
+/* Brilliant's interactive elements embedded in reading */
+.b-interactive{background:#161b22;border:1px solid #21262d;border-radius:10px;padding:20px;margin:4px 0}
+.b-interactive-label{font-size:10px;font-weight:600;color:#8b949e;text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px}
+.b-q{font-size:14px;font-weight:500;color:#e6edf3;line-height:1.5;margin-bottom:16px}
+.b-opts{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.b-opt{padding:10px 14px;border-radius:8px;border:1px solid #21262d;cursor:pointer;font-size:13px;color:#8b949e;transition:all .15s;display:flex;align-items:center;gap:10px}
+.b-opt:hover{border-color:#30363d;color:#e6edf3;background:#1c2128}
+.b-opt.sel{border-color:#58a6ff;background:#1f2d4a;color:#e6edf3}
+.b-opt.correct{border-color:#3fb950;background:#0d2218;color:#3fb950}
+.b-opt.wrong{border-color:#f85149;background:#1c1117;color:#f85149}
+.b-opt-key{width:22px;height:22px;border-radius:50%;border:1px solid #30363d;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0;color:#8b949e}
+.b-opt.sel .b-opt-key{background:#58a6ff;border-color:#58a6ff;color:#fff}
+.b-opt.correct .b-opt-key{background:#3fb950;border-color:#3fb950;color:#fff}
+.b-opt.wrong .b-opt-key{background:#f85149;border-color:#f85149;color:#fff}
+.b-check{padding:10px 24px;background:#238636;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s;letter-spacing:.01em}
+.b-check:hover{background:#2ea043}
+.b-check:disabled{background:#21262d;color:#484f58;cursor:not-allowed}
+.b-check.next{background:#1f6feb;color:#fff}
+.b-check.next:hover{background:#388bfd}
+.b-feedback{padding:12px 14px;border-radius:8px;font-size:13px;line-height:1.6;margin-top:10px;display:none}
+.b-feedback.show{display:block}
+.b-feedback.good{background:#0d2218;border:1px solid #1a4730;color:#3fb950}
+.b-feedback.bad{background:#1c1117;border:1px solid #3d1a1a;color:#f85149}
+
+/* Diagram card inside reading */
+.b-diagram{background:#161b22;border:1px solid #21262d;border-radius:10px;overflow:hidden;margin:4px 0}
+.b-diagram-title{padding:10px 16px;font-size:11px;font-weight:600;color:#8b949e;text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid #21262d}
+.b-diagram-body{padding:20px;display:flex;justify-content:center}
+
+/* Continue button at bottom */
+.b-continue{position:sticky;bottom:0;background:linear-gradient(transparent,#0d1117 40%);padding:16px 24px;display:flex;justify-content:center}
+.b-continue-btn{padding:12px 40px;background:#238636;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s}
+.b-continue-btn:hover{background:#2ea043}
+
+/* Exercise — full screen Brilliant style */
+.ex-shell{flex:1;display:flex;flex-direction:column;background:#0d1117}
+.ex-header{padding:12px 24px;border-bottom:1px solid #21262d;display:flex;align-items:center;gap:12px;flex-shrink:0}
+.ex-back{font-size:12px;color:#8b949e;cursor:pointer}
+.ex-back:hover{color:#e6edf3}
+.ex-title-bar{font-size:12px;font-weight:600;color:#8b949e;flex:1}
+.ex-dots{display:flex;gap:4px}
+.ex-dot{width:28px;height:4px;border-radius:2px;background:#21262d;transition:background .2s}
+.ex-dot.done{background:#3fb950}
+.ex-dot.on{background:#58a6ff}
+.ex-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:32px 24px;overflow-y:auto}
+.ex-q-wrap{width:100%;max-width:600px}
+.ex-label{font-size:11px;font-weight:600;color:#58a6ff;text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px}
+.ex-question{font-size:18px;font-weight:600;color:#e6edf3;line-height:1.4;margin-bottom:24px}
+.ex-visual{background:#161b22;border:1px solid #21262d;border-radius:12px;padding:20px;margin-bottom:24px;display:flex;justify-content:center;align-items:center;min-height:140px}
+.b-check-wrap{display:flex;justify-content:flex-start;margin-top:4px}
+</style>
+
+<div style="padding:.5rem 0">
+<div class="b-bg">
+
+  <div class="b-nav">
+    <div class="b-nav-item on" onclick="bshow('courses')">Courses</div>
+    <div class="b-nav-item" onclick="bshow('lesson')">Reading lesson</div>
+    <div class="b-nav-item" onclick="bshow('exercise')">Exercise</div>
+  </div>
+
+  <!-- COURSE HOME -->
+  <div id="bp-courses" class="b-panel on">
+    <div class="course-hero">
+      <div class="course-hero-title">Biology — Grade 10</div>
+      <div class="course-hero-sub">30 weeks · 224 study hours · Emma</div>
+    </div>
+    <div class="course-grid">
+
+      <div class="chapter-label">Unit 1 · Cell biology</div>
+
+      <div class="lesson-row" onclick="bshow('lesson')">
+        <div class="lesson-icon done">
+          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div style="flex:1">
+          <div class="lesson-title done">Cell theory</div>
+          <div class="lesson-meta">6h · All levels done</div>
+        </div>
+        <span class="lesson-badge" style="background:#0d2218;color:#3fb950">Complete</span>
+      </div>
+
+      <div class="lesson-row" onclick="bshow('lesson')">
+        <div class="lesson-icon done">
+          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div style="flex:1">
+          <div class="lesson-title done">Prokaryotes vs. eukaryotes</div>
+          <div class="lesson-meta">7h · All levels done</div>
+        </div>
+        <span class="lesson-badge" style="background:#0d2218;color:#3fb950">Complete</span>
+      </div>
+
+      <div class="lesson-row on" onclick="bshow('lesson')">
+        <div class="lesson-icon active">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <div style="flex:1">
+          <div class="lesson-title">Organelles</div>
+          <div class="lesson-meta">8h · In progress · Level 3 of 6</div>
+        </div>
+        <span class="lesson-badge" style="background:#1f2d4a;color:#58a6ff">Continue</span>
+      </div>
+
+      <div class="lesson-row">
+        <div class="lesson-icon locked">
+          <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+        </div>
+        <div style="flex:1">
+          <div class="lesson-title" style="color:#484f58">Cell membrane</div>
+          <div class="lesson-meta">12h · Locked</div>
+        </div>
+      </div>
+
+      <div class="lesson-row">
+        <div class="lesson-icon locked">
+          <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+        </div>
+        <div style="flex:1">
+          <div class="lesson-title" style="color:#484f58">Cell division</div>
+          <div class="lesson-meta">14h · Locked</div>
+        </div>
+      </div>
+
+      <div class="chapter-label">Unit 2 · Genetics</div>
+
+      <div class="lesson-row">
+        <div class="lesson-icon locked">
+          <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+        </div>
+        <div style="flex:1">
+          <div class="lesson-title" style="color:#484f58">Mendelian genetics</div>
+          <div class="lesson-meta">12h · Locked</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- READING LESSON — the most important screen -->
+  <div id="bp-lesson" class="b-panel">
+    <div class="lesson-shell">
+
+      <div class="lesson-sidebar">
+        <div class="ls-header">
+          <div class="ls-title">Organelles</div>
+          <div class="ls-sub">Lesson 3 of 5 · 8h</div>
+        </div>
+        <div class="ls-item" style="color:#3fb950"><div class="ls-dot" style="background:#3fb950"></div>Introduction</div>
+        <div class="ls-item" style="color:#3fb950"><div class="ls-dot" style="background:#3fb950"></div>The power plant</div>
+        <div class="ls-item on"><div class="ls-dot" style="background:#58a6ff"></div>The factory</div>
+        <div class="ls-item"><div class="ls-dot" style="background:#21262d"></div>The shipping dept.</div>
+        <div class="ls-item"><div class="ls-dot" style="background:#21262d"></div>The control room</div>
+        <div class="ls-item"><div class="ls-dot" style="background:#21262d"></div>Practice problems</div>
+        <div class="ls-item"><div class="ls-dot" style="background:#21262d"></div>Quiz</div>
+      </div>
+
+      <div class="lesson-main" id="lesson-scroll">
+        <div class="lesson-progress">
+          <div class="prog-bar"><div class="prog-fill" style="width:38%"></div></div>
+          <div class="prog-label">3 of 7 sections</div>
+        </div>
+
+        <div class="lesson-content">
+
+          <div class="b-heading">The protein factory</div>
+
+          <div class="b-prose">You know the mitochondria powers the cell. But all that energy is useless without a way to <strong>build things</strong>. The cell needs to manufacture proteins constantly — structural proteins, enzymes, hormones, and more.</div>
+
+          <div class="b-prose">That is where the <strong>endoplasmic reticulum (ER)</strong> comes in. It is a massive network of folded membranes — if you unfolded it completely, it would cover the entire cell surface several times over.</div>
+
+          <!-- INLINE QUESTION — this is Brilliant's signature move -->
+          <div class="b-interactive">
+            <div class="b-interactive-label">Quick check</div>
+            <div class="b-q">Before reading further — what do you think makes the <em>rough</em> ER look rough under a microscope?</div>
+            <div class="b-opts" id="inline-opts">
+              <div class="b-opt" onclick="selectInline(this,false)"><div class="b-opt-key">A</div>It has a bumpy outer membrane</div>
+              <div class="b-opt" onclick="selectInline(this,true)"><div class="b-opt-key">B</div>Ribosomes attached to its surface</div>
+              <div class="b-opt" onclick="selectInline(this,false)"><div class="b-opt-key">C</div>It produces rough proteins</div>
+              <div class="b-opt" onclick="selectInline(this,false)"><div class="b-opt-key">D</div>Its folds create a rough texture</div>
+            </div>
+            <button class="b-check" id="inline-btn" disabled onclick="checkInline()">Check</button>
+            <div class="b-feedback" id="inline-fb"></div>
+          </div>
+
+          <!-- Next prose section revealed after answering -->
+          <div id="prose-continue" style="display:none;display:flex;flex-direction:column;gap:20px">
+
+            <div class="b-prose">Exactly right. <strong>Ribosomes</strong> are tiny molecular machines that read genetic instructions and assemble amino acids into proteins. When they dock onto the ER membrane, they give it that rough, granular appearance — hence the name.</div>
+
+            <div class="b-diagram">
+              <div class="b-diagram-title">Rough ER vs smooth ER</div>
+              <div class="b-diagram-body">
+                <svg width="100%" viewBox="0 0 480 160" style="max-width:480px">
+                  <!-- Rough ER -->
+                  <text x="80" y="18" text-anchor="middle" font-size="11" fill="#8b949e" font-weight="600">ROUGH ER</text>
+                  <path d="M20 40 Q50 30 80 40 Q110 50 140 40" fill="none" stroke="#388bfd" stroke-width="2.5"/>
+                  <path d="M20 60 Q50 50 80 60 Q110 70 140 60" fill="none" stroke="#388bfd" stroke-width="2.5"/>
+                  <path d="M20 80 Q50 70 80 80 Q110 90 140 80" fill="none" stroke="#388bfd" stroke-width="2.5"/>
+                  <!-- Ribosomes as dots -->
+                  <circle cx="35" cy="38" r="4" fill="#3fb950"/><circle cx="50" cy="33" r="4" fill="#3fb950"/><circle cx="65" cy="36" r="4" fill="#3fb950"/><circle cx="80" cy="38" r="4" fill="#3fb950"/><circle cx="95" cy="33" r="4" fill="#3fb950"/><circle cx="110" cy="37" r="4" fill="#3fb950"/><circle cx="125" cy="36" r="4" fill="#3fb950"/>
+                  <circle cx="35" cy="58" r="4" fill="#3fb950"/><circle cx="50" cy="53" r="4" fill="#3fb950"/><circle cx="65" cy="56" r="4" fill="#3fb950"/><circle cx="80" cy="59" r="4" fill="#3fb950"/><circle cx="95" cy="54" r="4" fill="#3fb950"/><circle cx="110" cy="57" r="4" fill="#3fb950"/>
+                  <text x="80" y="130" text-anchor="middle" font-size="10" fill="#3fb950">Ribosomes attached</text>
+                  <text x="80" y="145" text-anchor="middle" font-size="10" fill="#8b949e">Makes proteins for export</text>
+
+                  <!-- Divider -->
+                  <line x1="200" y1="20" x2="200" y2="150" stroke="#21262d" stroke-width="1" stroke-dasharray="4 3"/>
+
+                  <!-- Smooth ER -->
+                  <text x="360" y="18" text-anchor="middle" font-size="11" fill="#8b949e" font-weight="600">SMOOTH ER</text>
+                  <path d="M240 40 Q280 30 320 50 Q360 70 400 55" fill="none" stroke="#d2a8ff" stroke-width="2.5"/>
+                  <path d="M240 70 Q280 60 320 80 Q360 100 400 85" fill="none" stroke="#d2a8ff" stroke-width="2.5"/>
+                  <path d="M240 100 Q280 90 320 110 Q360 130 400 115" fill="none" stroke="#d2a8ff" stroke-width="2.5"/>
+                  <text x="360" y="145" text-anchor="middle" font-size="10" fill="#d2a8ff">No ribosomes</text>
+                  <text x="360" y="157" text-anchor="middle" font-size="10" fill="#8b949e">Lipids, detox functions</text>
+                </svg>
+              </div>
+            </div>
+
+            <div class="b-prose">The <strong>smooth ER</strong> has no ribosomes and therefore looks smooth. It handles a different set of jobs — making lipids, regulating calcium, and detoxifying drugs in liver cells.</div>
+
+            <div class="b-callout">
+              <strong>Why does this matter?</strong> Cells that secrete lots of protein — like pancreatic cells making digestive enzymes, or plasma cells making antibodies — are absolutely packed with rough ER. The more protein a cell exports, the more rough ER it needs.
+            </div>
+
+            <div class="b-interactive">
+              <div class="b-interactive-label">Apply it</div>
+              <div class="b-q">A pancreatic cell secretes large amounts of digestive enzymes. Which organelle would you expect to be especially abundant in this cell?</div>
+              <div class="b-opts" id="apply-opts">
+                <div class="b-opt" onclick="selectApply(this,false)"><div class="b-opt-key">A</div>Smooth ER</div>
+                <div class="b-opt" onclick="selectApply(this,false)"><div class="b-opt-key">B</div>Vacuole</div>
+                <div class="b-opt" onclick="selectApply(this,true)"><div class="b-opt-key">C</div>Rough ER</div>
+                <div class="b-opt" onclick="selectApply(this,false)"><div class="b-opt-key">D</div>Lysosome</div>
+              </div>
+              <button class="b-check" id="apply-btn" disabled onclick="checkApply()">Check</button>
+              <div class="b-feedback" id="apply-fb"></div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- EXERCISE — standalone brilliant exercise screen -->
+  <div id="bp-exercise" class="b-panel">
+    <div class="ex-shell">
+      <div class="ex-header">
+        <div class="ex-back" onclick="bshow('courses')">← Organelles</div>
+        <div class="ex-title-bar">Exercise 2 of 5</div>
+        <div class="ex-dots">
+          <div class="ex-dot done"></div>
+          <div class="ex-dot on"></div>
+          <div class="ex-dot"></div>
+          <div class="ex-dot"></div>
+          <div class="ex-dot"></div>
+        </div>
+      </div>
+      <div class="ex-body">
+        <div class="ex-q-wrap">
+          <div class="ex-label">Organelles · Apply</div>
+          <div class="ex-question">A cell is found that contains very few mitochondria but is loaded with smooth ER. What is the most likely primary function of this cell?</div>
+
+          <div class="ex-visual">
+            <svg width="100%" viewBox="0 0 440 120" style="max-width:440px">
+              <!-- Cell outline -->
+              <ellipse cx="220" cy="60" rx="200" ry="52" fill="none" stroke="#21262d" stroke-width="2"/>
+              <!-- Nucleus -->
+              <ellipse cx="110" cy="58" rx="36" ry="30" fill="#1f2d4a" stroke="#388bfd" stroke-width="1.5"/>
+              <text x="110" y="62" text-anchor="middle" font-size="10" fill="#58a6ff">nucleus</text>
+              <!-- Smooth ER (lots) -->
+              <path d="M165 35 Q185 28 205 38 Q225 48 245 38" fill="none" stroke="#d2a8ff" stroke-width="2"/>
+              <path d="M160 52 Q182 44 202 55 Q222 66 242 55" fill="none" stroke="#d2a8ff" stroke-width="2"/>
+              <path d="M165 70 Q185 62 205 72 Q225 82 245 72" fill="none" stroke="#d2a8ff" stroke-width="2"/>
+              <path d="M260 40 Q280 32 300 42 Q320 52 340 42" fill="none" stroke="#d2a8ff" stroke-width="2"/>
+              <path d="M255 58 Q278 50 298 61 Q318 72 338 61" fill="none" stroke="#d2a8ff" stroke-width="2"/>
+              <path d="M260 76 Q280 68 300 78 Q320 88 340 78" fill="none" stroke="#d2a8ff" stroke-width="2"/>
+              <text x="300" y="105" text-anchor="middle" font-size="10" fill="#d2a8ff">smooth ER (abundant)</text>
+              <!-- Mito (few) -->
+              <ellipse cx="385" cy="52" rx="22" ry="12" fill="#1a2a1a" stroke="#3fb950" stroke-width="1"/>
+              <text x="385" y="78" text-anchor="middle" font-size="9" fill="#3fb950">few mito.</text>
+            </svg>
+          </div>
+
+          <div class="b-opts" id="ex-opts">
+            <div class="b-opt" onclick="selEx(this,false)"><div class="b-opt-key">A</div>Generating large amounts of ATP for muscle contraction</div>
+            <div class="b-opt" onclick="selEx(this,false)"><div class="b-opt-key">B</div>Producing and secreting antibody proteins</div>
+            <div class="b-opt" onclick="selEx(this,true)"><div class="b-opt-key">C</div>Synthesising lipids or detoxifying substances</div>
+            <div class="b-opt" onclick="selEx(this,false)"><div class="b-opt-key">D</div>Rapidly dividing and replicating DNA</div>
+          </div>
+
+          <div class="b-check-wrap">
+            <button class="b-check" id="ex-btn" disabled onclick="checkEx()">Check answer</button>
+          </div>
+          <div class="b-feedback" id="ex-fb" style="margin-top:12px"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<script>
+function bshow(id) {
+  document.querySelectorAll('.b-panel').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.b-nav-item').forEach((n,i) => { n.classList.remove('on'); if(['courses','lesson','exercise'][i]===id) n.classList.add('on'); });
+  document.getElementById('bp-'+id).classList.add('on');
+}
+
+let inlineSel = null, inlineCorrect = null, inlineDone = false;
+function selectInline(el, correct) {
+  if(inlineDone) return;
+  document.querySelectorAll('#inline-opts .b-opt').forEach(o => o.classList.remove('sel'));
+  el.classList.add('sel'); inlineSel = el; inlineCorrect = correct;
+  document.getElementById('inline-btn').disabled = false;
+}
+function checkInline() {
+  if(inlineDone) return; inlineDone = true;
+  const fb = document.getElementById('inline-fb');
+  const btn = document.getElementById('inline-btn');
+  document.querySelectorAll('#inline-opts .b-opt').forEach(o => {
+    o.classList.remove('sel');
+    if(o === inlineSel) o.classList.add(inlineCorrect ? 'correct' : 'wrong');
+    if(!inlineCorrect && o.textContent.includes('Ribosomes attached')) o.classList.add('correct');
+  });
+  if(inlineCorrect) {
+    fb.className = 'b-feedback show good';
+    fb.innerHTML = '<strong>Correct.</strong> Ribosomes are the protein-making machines. When they attach to the ER surface, they give it that granular, rough appearance. This is exactly what you are about to read.';
+    btn.textContent = 'Continue reading'; btn.className = 'b-check next';
+    btn.onclick = () => { document.getElementById('prose-continue').style.display = 'flex'; btn.style.display='none'; fb.style.display='none'; document.getElementById('lesson-scroll').scrollTop += 200; };
+  } else {
+    fb.className = 'b-feedback show bad';
+    fb.innerHTML = '<strong>Not quite.</strong> Look at the image on the left side of a biology textbook — rough ER looks like a surface covered in tiny bumps. Those bumps are actually separate structures docked onto the membrane.';
+    btn.textContent = 'Try again'; btn.className = 'b-check';
+    btn.onclick = () => { inlineDone=false; inlineSel=null; document.querySelectorAll('#inline-opts .b-opt').forEach(o=>o.classList.remove('sel','correct','wrong')); btn.disabled=true; btn.textContent='Check'; btn.onclick=checkInline; fb.classList.remove('show'); };
+  }
+}
+
+let applySel=null,applyCorrect=null,applyDone=false;
+function selectApply(el,correct){if(applyDone)return;document.querySelectorAll('#apply-opts .b-opt').forEach(o=>o.classList.remove('sel'));el.classList.add('sel');applySel=el;applyCorrect=correct;document.getElementById('apply-btn').disabled=false;}
+function checkApply(){if(applyDone)return;applyDone=true;const fb=document.getElementById('apply-fb');const btn=document.getElementById('apply-btn');document.querySelectorAll('#apply-opts .b-opt').forEach(o=>{o.classList.remove('sel');if(o===applySel)o.classList.add(applyCorrect?'correct':'wrong');if(!applyCorrect&&o.textContent.includes('Rough ER'))o.classList.add('correct');});if(applyCorrect){fb.className='b-feedback show good';fb.innerHTML='<strong>Correct.</strong> Digestive enzymes are proteins — and proteins for export are made on the rough ER. Pancreatic cells are some of the most ER-rich cells in the body.';btn.textContent='Next section';btn.className='b-check next';btn.onclick=()=>alert('Moving to: The shipping department (Golgi apparatus)...');}else{fb.className='b-feedback show bad';fb.innerHTML='<strong>Not quite.</strong> Smooth ER handles lipids and detoxification. This cell is making <em>proteins</em> (enzymes). Which type of ER is specialised for protein production?';btn.textContent='Try again';btn.className='b-check';btn.onclick=()=>{applyDone=false;applySel=null;document.querySelectorAll('#apply-opts .b-opt').forEach(o=>o.classList.remove('sel','correct','wrong'));btn.disabled=true;btn.textContent='Check';btn.onclick=checkApply;fb.classList.remove('show');};}}
+
+let exSel=null,exCorrect=null,exDone=false;
+function selEx(el,correct){if(exDone)return;document.querySelectorAll('#ex-opts .b-opt').forEach(o=>o.classList.remove('sel'));el.classList.add('sel');exSel=el;exCorrect=correct;document.getElementById('ex-btn').disabled=false;}
+function checkEx(){if(exDone)return;exDone=true;const fb=document.getElementById('ex-fb');const btn=document.getElementById('ex-btn');document.querySelectorAll('#ex-opts .b-opt').forEach(o=>{o.classList.remove('sel');if(o===exSel)o.classList.add(exCorrect?'correct':'wrong');if(!exCorrect&&o.textContent.includes('Synthesising'))o.classList.add('correct');});if(exCorrect){fb.className='b-feedback show good';fb.innerHTML='<strong>Correct.</strong> Smooth ER is the organelle for lipid synthesis and detoxification. Liver cells — which detoxify alcohol and drugs — are packed with smooth ER for exactly this reason. This cell had very few mitochondria, ruling out energy-intensive functions.';btn.textContent='Next exercise →';btn.className='b-check next';btn.onclick=()=>alert('Exercise 3: The Golgi apparatus and protein shipping...');}else{fb.className='b-feedback show bad';fb.innerHTML='<strong>Not quite.</strong> Look at what is abundant — smooth ER. Remember: smooth ER handles lipids and detoxification, not protein secretion (that is rough ER) and not ATP production (that is mitochondria).';btn.textContent='Try again';btn.className='b-check';btn.onclick=()=>{exDone=false;exSel=null;document.querySelectorAll('#ex-opts .b-opt').forEach(o=>o.classList.remove('sel','correct','wrong'));btn.disabled=true;btn.textContent='Check answer';btn.onclick=checkEx;fb.classList.remove('show');};}}
+</script>
