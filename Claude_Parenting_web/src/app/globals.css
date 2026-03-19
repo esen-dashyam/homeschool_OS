@@ -1,0 +1,109 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Warm off-white — like Notion's page background */
+    --background: 40 33% 98%;
+    --foreground: 30 8% 20%;
+    --card: 0 0% 100%;
+    --card-foreground: 30 8% 20%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 30 8% 20%;
+    /* Notion blue accent */
+    --primary: 213 78% 48%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 40 13% 94%;
+    --secondary-foreground: 30 8% 20%;
+    --muted: 40 13% 94%;
+    /* Warm muted gray — like Notion's secondary text */
+    --muted-foreground: 40 3% 57%;
+    /* Hover/active background */
+    --accent: 40 10% 91%;
+    --accent-foreground: 30 8% 20%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    /* Subtle warm border */
+    --border: 40 10% 90%;
+    --input: 40 10% 90%;
+    --ring: 213 78% 48%;
+    /* Smaller, more subtle radius — like Notion */
+    --radius: 0.375rem;
+    /* Sidebar — light warm gray, not dark */
+    --sidebar-background: 40 20% 96%;
+    --sidebar-foreground: 30 8% 25%;
+    --sidebar-primary: 213 78% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 40 10% 91%;
+    --sidebar-accent-foreground: 30 8% 20%;
+    --sidebar-border: 40 10% 90%;
+    --sidebar-ring: 213 78% 48%;
+    --chart-1: 213 78% 48%;
+    --chart-2: 160 48% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 50% 55%;
+    --chart-5: 340 60% 55%;
+    --font-geist-sans: "Inter", system-ui, sans-serif;
+    --font-geist-mono: "JetBrains Mono", "Fira Code", monospace;
+  }
+
+  .dark {
+    --background: 0 0% 12%;
+    --foreground: 40 5% 90%;
+    --card: 0 0% 14%;
+    --card-foreground: 40 5% 90%;
+    --popover: 0 0% 14%;
+    --popover-foreground: 40 5% 90%;
+    --primary: 213 78% 56%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 18%;
+    --secondary-foreground: 40 5% 90%;
+    --muted: 0 0% 18%;
+    --muted-foreground: 40 5% 55%;
+    --accent: 0 0% 20%;
+    --accent-foreground: 40 5% 90%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --ring: 213 78% 56%;
+    --sidebar-background: 0 0% 10%;
+    --sidebar-foreground: 40 5% 85%;
+    --sidebar-primary: 213 78% 56%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 0% 16%;
+    --sidebar-accent-foreground: 40 5% 90%;
+    --sidebar-border: 0 0% 18%;
+    --sidebar-ring: 213 78% 56%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-thin {
+    scrollbar-width: thin;
+  }
+  .line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+}
